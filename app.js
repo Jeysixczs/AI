@@ -19,14 +19,28 @@ document.getElementById('sendButton').addEventListener('click', async () => {
         })
     };
 
-    try {
-        const response = await fetch(url, options);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+    for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+            const response = await fetch(url, options);
+            if (response.status === 429) {
+                const retryAfter = response.headers.get('Retry-After');
+                const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : 2000;
+                console.log(`Rate limited. Waiting ${waitTime}ms before retrying...`);
+                await delay(waitTime);
+            } else if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            } else {
+                const result = await response.json();
+                responseDiv.textContent = result.reply;
+                return;
+            }
+        } catch (error) {
+            if (attempt === 3) {
+                responseDiv.textContent = 'Error: ' + error.message;
+                console.error('Error:', error);
+            }
         }
-        const result = await response.text();
-        console.log(result);
-    } catch (error) {
-        console.error('Error:', error);
     }
 });
