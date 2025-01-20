@@ -1,4 +1,3 @@
-// app.js
 document.getElementById('sendButton').addEventListener('click', async () => {
     const userInput = document.getElementById('userInput').value;
     const responseDiv = document.getElementById('response');
@@ -20,12 +19,20 @@ document.getElementById('sendButton').addEventListener('click', async () => {
         })
     };
 
+    console.log('Request URL:', url);
+    console.log('Request Options:', options);
+
     try {
         const response = await fetch(url, options);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const result = await response.json();
         responseDiv.textContent = result.reply;
     } catch (error) {
         responseDiv.textContent = 'Error: ' + error.message;
-        console.error(error);
+        console.error('Error:', error);
     }
 });
