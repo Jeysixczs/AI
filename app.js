@@ -23,7 +23,9 @@ document.getElementById('sendButton').addEventListener('click', async () => {
 
     for (let attempt = 1; attempt <= 3; attempt++) {
         try {
+            console.log('Sending request:', options);
             const response = await fetch(url, options);
+
             if (response.status === 429) {
                 const retryAfter = response.headers.get('Retry-After');
                 const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : 2000;
@@ -33,7 +35,13 @@ document.getElementById('sendButton').addEventListener('click', async () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 const result = await response.json();
-                responseDiv.textContent = result.reply;
+                console.log('API Response:', result);
+
+                if (result.reply) {
+                    responseDiv.textContent = result.reply;
+                } else {
+                    responseDiv.textContent = 'Error: No reply from AI.';
+                }
                 return;
             }
         } catch (error) {
