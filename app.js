@@ -19,20 +19,14 @@ document.getElementById('sendButton').addEventListener('click', async () => {
         })
     };
 
-    console.log('Request URL:', url);
-    console.log('Request Options:', options);
-
     try {
         const response = await fetch(url, options);
-
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        const result = await response.json();
-        responseDiv.textContent = result.reply;
+        const result = await response.text();
+        console.log(result);
     } catch (error) {
-        responseDiv.textContent = 'Error: ' + error.message;
         console.error('Error:', error);
     }
 });
