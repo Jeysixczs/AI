@@ -24,7 +24,7 @@ document.getElementById('sendButton').addEventListener('click', async () => {
     for (let attempt = 1; attempt <= 3; attempt++) {
         try {
             console.log('Sending request:', options);
-            const response = await fetch(url, options);
+            const response = await fetch(https://copilot5.p.rapidapi.com/copilot, options);
 
             if (response.status === 429) {
                 const retryAfter = response.headers.get('Retry-After');
